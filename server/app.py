@@ -24,7 +24,19 @@ POLICY_PATH = os.path.join(DOCS, "policy.json")
 with open(POLICY_PATH) as f:
     POLICY = json.load(f)
 
-BLOCK_RE = re.compile("|".join(POLICY["block_patterns"])) if POLICY["block_patterns"] else None
+# Normalize patterns: strip any inline flags like (?i) and compile with IGNORECASE
+_raw_patterns = POLICY.get("block_patterns", []) or []
+_normalized = []
+for _p in _raw_patterns:
+    try:
+        # Remove leading inline flags group e.g., (?i) or (?imsx)
+        _p2 = re.sub(r"^\(\?[a-zA-Z-]*\)", "", _p)
+        _normalized.append(f"(?:{_p2})")
+    except Exception:
+        # If something goes wrong, fall back to literal match
+        _normalized.append(re.escape(_p))
+
+BLOCK_RE = re.compile("|".join(_normalized), re.IGNORECASE) if _normalized else None
 
 
 class AskReq(BaseModel):
