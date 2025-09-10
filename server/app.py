@@ -1,9 +1,19 @@
 from fastapi import FastAPI, Body
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 import re, csv, os, datetime, requests, json
 
 app = FastAPI(title="AiTa", version="0.1.0")
+
+# Allow local UI (e.g., http://<pc-ip>:8080) to call API on :8008
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
@@ -121,4 +131,3 @@ def unknowns(teacher_id: str = "engineering"):
         rows = list(csv.reader(f))
     header, data = rows[0], rows[1:]
     return {"header": header, "rows": data}
-

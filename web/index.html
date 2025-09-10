@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Class TA</title>
+<style>
+  body{font-family:system-ui,Arial,sans-serif;max-width:720px;margin:32px auto;padding:0 16px}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .note{font-size:12px;opacity:.7}
+  #out{border:1px solid #ccc;padding:12px;border-radius:8px;min-height:48px;margin-top:12px}
+  .row{display:flex;gap:8px}
+  select,input,button{font-size:16px;padding:10px;border-radius:8px;border:1px solid #ccc}
+  button{cursor:pointer}
+</style>
+<header>
+  <h1>Class TA</h1>
+  <div class="note">Local only. No student data stored.</div>
+</header>
+
+<div class="row">
+  <select id="teacher">
+    <option value="engineering">Engineering</option>
+  </select>
+  <select id="mode">
+    <option value="student">Student</option>
+    <option value="sub">Sub Mode</option>
+  </select>
+  </div>
+
+<div class="row" style="margin-top:8px;">
+  <input id="q" placeholder="Ask about procedures, syllabus, or class info" style="flex:1"/>
+  <button id="ask">Ask</button>
+  </div>
+
+<div id="out"></div>
+
+<script>
+  const apiBase = `${location.protocol}//${location.hostname}:8008`;
+  const askBtn = document.getElementById('ask');
+  const input = document.getElementById('q');
+
+  async function ask() {
+    const question = input.value.trim();
+    const teacher_id = document.getElementById('teacher').value;
+    const mode = document.getElementById('mode').value;
+    document.getElementById('out').textContent = "Thinking...";
+    try {
+      const r = await fetch(`${apiBase}/ask`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({question, teacher_id, mode})
+      });
+      const j = await r.json();
+      document.getElementById('out').textContent = j.answer || "Ask your teacher.";
+    } catch(e){
+      document.getElementById('out').textContent = "Ask your teacher.";
+    }
+  }
+
+  askBtn.onclick = ask;
+  input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ ask(); }});
+  </script>
+  </html>
+
