@@ -1,0 +1,15 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# vector db + local logs
+data/chroma/
+data/*.sqlite3
+logs/
+
+# node/web build caches (if any)
+web/node_modules/
+web/.cache/
+web/dist/
