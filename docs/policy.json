@@ -1,0 +1,11 @@
+{
+  "answer_max_sentences": 2,
+  "allow_longform": false,
+  "block_patterns": [
+    "(?i)ignore (the )?instructions",
+    "(?i)swear|curse|slur",
+    "(?i)who.*cutest.*teacher"
+  ],
+  "fallback_text": "Ask your teacher.",
+  "student_data_retention_days": 0
+}
